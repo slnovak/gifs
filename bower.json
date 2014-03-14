@@ -1,0 +1,26 @@
+{
+  "name": "gifs",
+  "version": "0.0.0",
+  "homepage": "https://github.com/BrettBukowski/gifs",
+  "authors": [
+    "Brett Bukowski <brett.bukowski@gmail.com>"
+  ],
+  "description": "gifs",
+  "main": "javascript/app.js",
+  "keywords": [
+    "gif"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "javascript/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "typeahead.js": "~0.10.0"
+  }
+}
