@@ -145,7 +145,7 @@
     Event.on('loadGif', this.loadGif.bind(this));
 
     if (!this.initialized) {
-      this.randomize.loadRandom();
+      this.init(window.location.hash.substr(1));
     }
   }
   App.prototype.loadGif = function (path) {
@@ -161,21 +161,27 @@
     window.scrollTo(0, 100);
     $('form input').typeahead('val', '');
   };
+  App.prototype.init = function (state) {
+    if (state.indexOf('/') > -1) {
+      this.loadGif(state);
+    }
+    else if (state) {
+      this.loadGifList(state);
+    }
+    else {
+      this.randomize.loadRandom();
+    }
+
+    this.initialized = true;
+  };
   App.prototype.onpopstate = function (e) {
     if (!e.state && !window.location.hash) {
       this.randomize.show();
       this.list.hide();
     }
     else {
-      var state = e.state || window.location.hash.substr(1);
-      if (state.indexOf('/') > -1) {
-        this.loadGif(state);
-      }
-      else {
-        this.loadGifList(state);
-      }
+      this.init(e.state || window.location.hash.substr(1));
     }
-    this.initialized = true;
   };
 
   new App();
