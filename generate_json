@@ -1,0 +1,53 @@
+#!/bin/bash
+
+rm gifs.json
+touch gifs.json
+echo "{
+\"success\": true,
+ \"data\": {" >> gifs.json
+dir=`pwd`
+dir_length=`pwd | wc -m`
+
+for D in *; do
+    if [ -d "${D}" ]; then
+        echo "${D}"   # your processing here
+
+        FILES=$dir/${D}/*
+        for f in $FILES
+        do
+          echo "Processing $f file..."
+          if [[ $f != *'.php'* ]] ; then
+            if [[ $f != *'.html'* ]] ; then
+              if [[ $f != *'theme/icon'* ]] ; then
+                if [[ $f != *'.css'* ]] ; then
+                  if [[ $f != *'error_log'* ]] ; then
+                    if [[ $f != *'.git'* ]] ; then
+
+                      name=${f:$dir_length}
+
+                      no_dash_name=${name//-/ }
+                      no_underscore_name=${no_dash_name//_/ }
+                      no_apos=${no_underscore_name//\'/ }
+                      no_gif_name=${no_apos%.gif}
+                      pretty_name=${no_gif_name////: }
+                      pretty_name=${pretty_name/'/\'}
+
+                      echo "
+                      \"$name\": {
+                      \"name\": \"$pretty_name\",
+                      \"src\": \"http://gifsb.in/$name\"
+                      }," >> $dir/gifs.json
+                    fi
+                  fi
+                fi
+              fi
+            fi
+          fi
+        done
+    fi
+done
+echo "\"\": {
+          \"name\": \"\",
+          \"src\": \"\"
+            }" >> $dir/gifs.json
+echo "}}" >> $dir/gifs.json
