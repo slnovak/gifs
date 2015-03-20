@@ -1,17 +1,20 @@
 #!/bin/bash
-
+echo "Generating JSON file for Gifsb.in"
+echo "========================================="
+echo "========================================="
 rm gifs.json
 touch gifs.json
 echo "{
 \"success\": true,
- \"data\": {" >> gifs.json
+  \"data\": {" >> gifs.json
 dir=`pwd`
 dir_length=`pwd | wc -m`
 
 for D in *; do
     if [ -d "${D}" ]; then
-        echo "${D}"   # your processing here
-
+        echo "========================================="
+        echo "Processing ${D} directory."
+        echo "========================================="
         FILES=$dir/${D}/*
         for f in $FILES
         do
@@ -21,22 +24,39 @@ for D in *; do
               if [[ $f != *'theme/icon'* ]] ; then
                 if [[ $f != *'.css'* ]] ; then
                   if [[ $f != *'error_log'* ]] ; then
-                    if [[ $f != *'.git'* ]] ; then
+                    if [[ $f != *'.git'* ]];  then
+                      if [[ $f != *'gb-thumb'* ]] ; then
+                        name=${f:$dir_length}
 
-                      name=${f:$dir_length}
+                        new_filename=${name/${D}/}
+                        unslashed_filename=${new_filename/\//}
+                        filename=${unslashed_filename/.gif/.png}
+                        thumb_src=${D}/gb-thumb-$filename
+                        thumb_src=${thumb_src/-[0]/}
+                        if [ -f $thumb_src ] || [[ $filename == *'gb-thumb'* ]]; then
+                          echo "Thumbnail already exists for $thumb_src."
+                        else
+                          echo "Creating thumbnail $thumb_src."
+                          mogrify -thumbnail 30x30 -gravity center -background white -format png -write $thumb_src $f[0]
+                        fi
+                        no_dash_name=${name//-/ }
+                        no_underscore_name=${no_dash_name//_/ }
+                        no_apos=${no_underscore_name//\'/ }
+                        no_gif_name=${no_apos%.gif}
+                        pretty_name=${no_gif_name/\//: }
+                        pretty_name=${pretty_name/'/\'}
 
-                      no_dash_name=${name//-/ }
-                      no_underscore_name=${no_dash_name//_/ }
-                      no_apos=${no_underscore_name//\'/ }
-                      no_gif_name=${no_apos%.gif}
-                      pretty_name=${no_gif_name////: }
-                      pretty_name=${pretty_name/'/\'}
+                        pretty_name=${pretty_name//\"/\\\"}
+                        name=${name//\"/\\\"}
+                        thumb_src=${thumb_src//\"/\\\"}
 
-                      echo "
-                      \"$name\": {
-                      \"name\": \"$pretty_name\",
-                      \"src\": \"http://gifsb.in/$name\"
-                      }," >> $dir/gifs.json
+
+                        echo "  \"$name\": { " >> $dir/gifs.json
+                        echo "    \"name\": \"$pretty_name\"," >> $dir/gifs.json
+                        echo "    \"src\": \"http://gifsb.in/$name\"," >> $dir/gifs.json
+                        echo "    \"thumb_src\": \"http://gifsb.in/$thumb_src\"" >> $dir/gifs.json
+                        echo "  }," >> $dir/gifs.json
+                      fi
                     fi
                   fi
                 fi
@@ -51,3 +71,4 @@ echo "\"\": {
           \"src\": \"\"
             }" >> $dir/gifs.json
 echo "}}" >> $dir/gifs.json
+>> $dir/gifs.json

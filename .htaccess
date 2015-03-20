@@ -13,7 +13,17 @@
 
 	# HIDE /theme DIRECTORY
 	IndexIgnore .htaccess /theme
+	IndexIgnore .htaccess /json
+	IndexIgnore .htaccess /scraper
 	IndexIgnore .htaccess /.git
+	IndexIgnore .htaccess /cgi-bin
+	IndexIgnore .htaccess generate_json
+	IndexIgnore .htaccess README.md
+	IndexIgnore .htaccess .ftpquota
+	IndexIgnore .htaccess .revision
+	IndexIgnore .htaccess .DS_Store
+	IndexIgnore .htaccess *gb-thumb-*
+
 
 #
 # GENERAL ICONS (BLANK, DIRECTORY, PARENT DIRECTORY)
